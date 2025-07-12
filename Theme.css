@@ -1,0 +1,415 @@
+/* Umum */
+body.light-mode {
+  background-color: #ffe5d9;
+  color: #4d2c2c;
+}
+
+body.light-mode h1,
+body.light-mode h2,
+body.light-mode h3,
+body.light-mode p,
+body.light-mode a {
+  color: #4d2c2c;
+}
+
+/* Tombol menu sidebar */
+body.light-mode .menu-btn {
+  background: #ffd6c0;
+  color: #4d2c2c;
+  border: 1px solid #e0a899;
+}
+
+/* Sidebar */
+body.light-mode .sidebar {
+  background-color: #ffcab1;
+  color: #4d2c2c;
+}
+
+body.light-mode .sidebar h3 {
+  color: #4d2c2c;
+}
+
+body.light-mode .sidebar ul {
+  background-color: #ffcbb6;
+}
+
+body.light-mode .sidebar ul li a {
+  color: #4d2c2c;
+}
+
+body.light-mode .sidebar ul li a:hover {
+  background: #f4b199;
+}
+
+/* User Status Box */
+body.light-mode .user-status {
+  background-color: #ffe0d3;
+  color: #4d2c2c;
+  border: 1px solid #e7b6a5;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+/* Time Box */
+body.light-mode .time-box {
+  background-color: #ffe5d9;
+  padding: 8px 0;
+  border-radius: 6px;
+  color: #4d2c2c;
+  font-weight: bold;
+  border: 1px solid #eec7ba;
+}
+
+/* Quote Box */
+body.light-mode .quote-box {
+  background-color: #fff1ec;
+  padding: 10px;
+  border-radius: 8px;
+  color: #7a4d4d;
+  font-style: italic;
+  border: 1px dashed #e0a899;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Container */
+body.light-mode .container {
+  color: #4d2c2c;
+}
+
+/* Halaman */
+body.light-mode .page {
+  background-color: transparent;
+}
+
+/* Tombol Umum */
+body.light-mode .btn {
+  background-color: #ff9671;
+  color: white;
+  border: 2px solid #e0a899;
+}
+
+body.light-mode .btn:hover {
+  background-color: #ff845a;
+}
+
+body.light-mode #restart {
+  background-color: #e57f5e;
+  color: white;
+  border: 2px solid #e0a899;
+}
+
+body.light-mode #restart:hover {
+  background-color: #cc6d4f;
+}
+
+/* Judul Proyek */
+body.light-mode #judul {
+  background-color: #ffd6c0;
+  color: #4d2c2c;
+  border: 3px double #ff9671;
+}
+
+/* Info */
+body.light-mode .info {
+  color: #4d2c2c;
+}
+
+body.light-mode ul li {
+  color: #4d2c2c;
+}
+
+/* Footer */
+body.light-mode footer {
+  color: #7a4d4d;
+}
+
+/* Section di Select Menu */
+body.light-mode .section {
+  background-color: #ffcab1;
+  border-left: 5px solid #ff9671;
+  box-shadow: 0 4px 10px rgba(255, 150, 113, 0.2);
+}
+
+body.light-mode .section:hover {
+  box-shadow: 0 8px 20px rgba(255, 150, 113, 0.35);
+}
+
+body.light-mode .section h2 {
+  color: #4d2c2c;
+}
+
+body.light-mode .section .btn {
+  background-color: #ff9671;
+  border: 2px outset #ffcbb6;
+  color: white;
+}
+
+body.light-mode .section .btn:hover {
+  border: 2px inset #ffbfa8;
+  background-color: #ff845a;
+}
+
+/* Tombol kembali */
+body.light-mode #kembali {
+  background-color: #ffcbb6;
+  color: #4d2c2c;
+}
+
+body.light-mode #kembali:hover {
+  background-color: #ffb9a1;
+}
+
+/* Spinner dan dot loading */
+body.light-mode .spinner {
+  border: 6px solid #f8cfc2;
+  border-top: 6px solid #ff9671;
+}
+
+body.light-mode .dot-bounce div {
+  background-color: #ff9671;
+}
+
+body.light-mode a {
+  text-decoration: none;
+}
+
+/* Tombol Bahasa */
+body.light-mode .lang-buttons button {
+  background-color: #ffd6c0;
+  color: #4d2c2c;
+  border: 1px solid #e0a899;
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .lang-buttons button:hover {
+  background-color: #ffbfa8;
+}
+
+/* Link Netlify */
+body.light-mode .sidebar a {
+  color: #4d2c2c;
+  font-weight: bold;
+}
+
+body.light-mode .sidebar a:hover {
+  color: #843434;
+}
+
+/* Tanggal */
+body.light-mode #tanggalSekarang {
+  color: #7a4d4d;
+  font-weight: 500;
+}
+
+/* Light mode untuk Game Ular */
+
+body.light-mode {
+  background: linear-gradient(to bottom, #fff4f0, #ffe8e1);
+  color: #4d2c2c;
+}
+
+body.light-mode h2#scoreDisplay {
+  color: #c94d4d;
+}
+
+body.light-mode canvas {
+  background-color: #fff1ec;
+  border: 4px double #c94d4d;
+  box-shadow: 0 0 10px #ff9999;
+}
+
+body.light-mode .controls button {
+  background-color: #ffd6c0;
+  color: #4d2c2c;
+  border: 2px solid #e0a899;
+}
+
+body.light-mode .controls button:hover {
+  background-color: #ffbfa8;
+  color: #fff;
+}
+
+body.light-mode .sound-control button {
+  background-color: #ffd6c0;
+  color: #4d2c2c;
+  border: 2px solid #e0a899;
+}
+
+body.light-mode .sound-control button:hover {
+  background-color: #ffb9a1;
+}
+
+body.light-mode #menuButton {
+  background-color: #ffd6c0;
+  color: #4d2c2c;
+  border: 2px solid #e0a899;
+}
+
+body.light-mode #menuButton:hover {
+  background-color: #ffbfa8;
+}
+
+body.light-mode .modal {
+  background-color: rgba(255, 200, 180, 0.6);
+}
+
+body.light-mode .modal-content {
+  background-color: #ffe5d9;
+  border: 2px solid #ff9671;
+  color: #4d2c2c;
+  box-shadow: 0 0 20px #ffc4aa;
+}
+
+body.light-mode .modal-content button {
+  background-color: #ffd6c0;
+  color: #4d2c2c;
+  border: 2px solid #e0a899;
+}
+
+body.light-mode .modal-content button:hover {
+  background-color: #ffbfa8;
+}
+
+body.light-mode .scoreboard {
+  color: #4d2c2c;
+}
+
+/* === MODE TERANG UNTUK FLIP & MATCH === */
+body.light-mode {
+  background-color: #ffe5d9;
+  color: #4d2c2c;
+}
+
+body.light-mode h1 {
+  background-color: #ffd6c0;
+  border: 3px double #ff9671;
+  color: #4d2c2c;
+}
+
+body.light-mode .timer-container {
+  background-color: #ffcbb6;
+}
+
+body.light-mode #time-bar {
+  background-color: #ff9671;
+}
+
+body.light-mode #time-label {
+  color: #4d2c2c;
+}
+
+body.light-mode .skor {
+  color: #c94d4d;
+}
+
+body.light-mode .kotak {
+  background-color: #ffd6c0;
+}
+
+body.light-mode .kotak-back {
+  /* warna defaultnya tetap warna kartu */
+}
+
+body.light-mode .message {
+  background-color: #fff1ec;
+  border-color: #ffbfa8;
+  color: #4d2c2c;
+}
+
+body.light-mode .message.win {
+  background-color: #88c070;
+  color: white;
+}
+
+body.light-mode .message.lose {
+  background-color: #e87461;
+  color: white;
+}
+
+body.light-mode #menu-popup {
+  background-color: #ffe5d9;
+  border-color: #ffbfa8;
+}
+
+body.light-mode #menu-popup button {
+  background-color: #ffd6c0;
+  color: #4d2c2c;
+  border: 2px solid #e0a899;
+}
+
+body.light-mode #menu-popup button:hover {
+  background-color: #ffb9a1;
+}
+
+body.light-mode #topRightMenu button {
+  background-color: #ffd6c0;
+  color: #4d2c2c;
+}
+
+body.light-mode #topRightMenu button:hover {
+  background-color: #ffb9a1;
+}
+
+body.light-mode #overlay {
+  background-color: rgba(255, 230, 220, 0.5);
+  backdrop-filter: blur(5px);
+}
+
+/* === WHACK A MOLE Light Mode === */
+body.light-mode {
+  background-color: #ffe5d9;
+  color: #4d2c2c;
+}
+
+body.light-mode h1 {
+  color: #c94d4d;
+}
+
+body.light-mode .cell {
+  background-color: #ffd6c0;
+  color: #4d2c2c;
+  border: 2px solid #ffc4aa;
+}
+
+body.light-mode .cell:hover {
+  background-color: #ffbfa8;
+}
+
+body.light-mode #topRightMenu button {
+  background-color: #ffd6c0;
+  color: #4d2c2c;
+  border: 1px solid #e0a899;
+}
+
+body.light-mode #topRightMenu button:hover {
+  background-color: #ffb9a1;
+}
+
+body.light-mode #menu-popup {
+  background-color: #ffe5d9;
+  border: 2px solid #ffbfa8;
+  box-shadow: 0 0 15px rgba(255, 170, 130, 0.2);
+}
+
+body.light-mode #menu-popup button {
+  background-color: #ffd6c0;
+  color: #4d2c2c;
+  border: 2px solid #e0a899;
+}
+
+body.light-mode #menu-popup button:hover {
+  background-color: #ffbfa8;
+}
+
+body.light-mode #overlay {
+  background-color: rgba(255, 230, 220, 0.5);
+  backdrop-filter: blur(5px);
+}
+
+body.light-mode #timer {
+  color: #843434;
+}
+
+body.light-mode .hammer {
+  filter: drop-shadow(0 0 2px #ff9671);
+}

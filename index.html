@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu Awal</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+    body {
+      font-family: Arial, Sans-Serif;
+      height: 100vh;
+      background: #192065;
+      color: white;
+    }
+    #loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    #loading-text {
+      white-space: nowrap;
+      font-size: 22px;
+    }
+    .dot-bounce {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .dot-bounce div {
+      width: 10px;
+      height: 10px;
+      background-color: white;
+      border-radius: 50%;
+      animation: bounce 1s infinite;
+    }
+    .dot-bounce div:nth-child(2) { animation-delay: 0.2s; }
+    .dot-bounce div:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+      40% { transform: scale(1.4); opacity: 1; }
+    }
+    .spinner {
+      border: 6px solid #444;
+      border-top: 6px solid #1e90ff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      margin: 20px auto;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .fade-in {
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .fade-in.show {
+      opacity: 1;
+    }
+    .sidebar {
+      position: fixed;
+      left: -245px;
+      top: 0;
+      width: 250px;
+      height: 100%;
+      background: #262F98;
+      padding-top: 20px;
+      transition: left 0.5s;
+      z-index: 2;
+    }
+    .sidebar h3 {
+      margin-left: 25px;
+      margin-bottom: 30px;
+      font-size: 20px;
+    }
+    .sidebar ul {
+  list-style: none;
+  padding: 15px 10px;
+  margin: 20px auto;
+  width: 85%;
+  background-color: rgba(29, 36, 115, 0.8); /* transparansi halus */
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(2px);
+}
+    .sidebar ul li {
+      padding: 10px;
+      margin-left: 15px;
+    }
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      display: inline-block;
+      padding: 5px 15px;
+      transition: background 0.5s;
+    }
+    .sidebar ul li a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+    .user-status {
+  margin: 20px 25px;
+  padding: 10px;
+  background-color: #2F3BBB;
+  border-radius: 8px;
+  border: 1px solid #2D38AF;
+  color: white;
+  font-size: 14px;
+  text-align: center;
+}
+
+.time-box {
+  margin: 20px 25px;
+  background-color: #2F3BBB;
+  border-radius: 6px;
+  border: 1px solid #2D38AF;
+  padding: 8px 0;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.quote-box {
+  background-color: #3542CB;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px dashed #3A48DB;
+  margin: 25px;
+  font-size: 13px;
+  color: #ccc;
+  font-style: italic;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.GitHub {
+  font-weight: bold;
+  font-size: 22px;
+  padding-bottom: 40px;
+}
+    .menu-btn {
+      position: fixed;
+      left: 10px;
+      top: 10px;
+      background: #171C59;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 18px;
+      color: white;
+      border-radius: 5px;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+      transition: opacity 0.5s;
+    }
+    .overlay-active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .container {
+      margin-left: 0;
+      transition: margin-left 0.5s;
+      padding: 20px;
+    }
+    #judul {
+      background-color: #1B1833;
+      border: 3px double aqua;
+      border-radius: 15px;
+      color: #FFF;
+      padding: 10px 20px;
+      width: fit-content;
+      margin: 50px auto 30px;
+      font-size: 30px;
+    }
+    .btn {
+      margin: 300px auto 0;
+      padding: 18px 100px;
+      background-color: #3440CB;
+      color: #fff;
+      border-radius: 10px;
+      border: 1px solid gray;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 18px;
+      display: block;
+      animation: pulse 1.3s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.9; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .page {
+      display: none;
+    }
+    .page-active {
+      display: block;
+    }
+    img {
+      width: 150px;
+      margin: 0 auto;
+      display: block;
+      border-radius: 50%;
+      border: 2px solid #cbcbcb;
+    }
+    .info {
+      text-align: center;
+      margin-top: 100px;
+    }
+    #profile footer {
+      margin-top: 150px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #888;
+    }
+    /* Pengaturan tampilan setting */
+.settings-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.settings-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 24px;
+}
+
+.setting-item {
+  margin-bottom: 25px;
+}
+
+.setting-item label {
+  font-size: 18px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.lang-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.lang-buttons button {
+  padding: 8px 14px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: #eeeeee;
+  color: #111;
+  transition: background 0.3s;
+}
+
+.lang-buttons button:hover {
+  background-color: #dcdcdc;
+}
+
+.setting-item input[type="checkbox"] {
+  transform: scale(1.5);
+  margin-top: 10px;
+}
+    #credits {
+      text-align: center;
+      margin-top: 30px;
+    }
+    #credits h1 {
+      margin-bottom: 20px;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #888;
+    }
+    .loading-inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+#loading-text {
+  font-size: 22px;
+  white-space: nowrap;
+}
+#restart {
+  margin-top: 10px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  background-color: #3440CB;
+  color: white;
+}
+
+  </style>
+  <!-- Theme CSS -->
+<link rel="stylesheet" href="Theme.css">
+
+<!-- Theme Toggle Script -->
+<script src="Theme.js" defer></script>
+</head>
+<body>
+  <div id="loading">
+  <div class="loading-inline">
+    <h1 id="loading-text" data-translate="loadingPage">Memuat halaman</h1>
+    <div class="dot-bounce"><div></div><div></div><div></div></div>
+  </div>
+  <div class="spinner"></div>
+</div>
+
+  <div id="kontenUtama" class="fade-in">
+    <button class="menu-btn" onclick="toogleMenu()">☰</button>
+    <nav class="sidebar" id="sidebar">
+      <h3 data-translate="navigation">Navigasi</h3>
+      <ul>
+        <li><a href="#home" onclick="changePage('home')" data-translate="home">Home</a></li>
+        <li><a href="#profile" onclick="changePage('profile')" data-translate="profile">Profile</a></li>
+        <li><a href="#settings" onclick="changePage('settings')" data-translate="settings">Settings</a></li>
+        <li><a href="#credits" onclick="changePage('credits')" data-translate="credits">Credits</a></li>
+      </ul>
+      <div class="user-status">
+  <p>👤 Daffa Project</p>
+  <small>Web Dev Pemula</small>
+</div>
+
+<div class="time-box">
+  <p id="currentTime"></p>
+</div>
+
+<div class="quote-box">
+  <em data-translate="tetapSemangat">"Tetap semangat belajar coding!"</em>
+</div>
+      <div style="margin-top: 30px; text-align: center; font-size: 15px;" class="GitHub">
+  <!-- GitHub Button -->
+  <a href="https://github.com/DaffaProject-sudo" target="_blank" style="text-decoration: none; color: #eee;">
+    <img src="GitHub Ikon.png" alt="GitHub" style="width: 30px; vertical-align: middle; margin-right: 60px;" />
+    GitHub
+  </a>
+
+  <!-- Tanggal -->
+  <div style="margin-top: 25px; color: #ccc; font-size: 13px;">
+    <span id="tanggalSekarang">Memuat...</span>
+  </div>
+</div>
+    </nav>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="container">
+      <section id="home" class="page page-active">
+        <h1 id="judul" data-translate="projectGame">Proyek Game</h1>
+        <a href="Select menu.html">
+          <button class="btn" data-translate="open">Masuk</button>
+        </a>
+        
+      </section>
+
+      <section id="profile" class="page">
+  <img src="Profil.jpg" alt="foto profil" />
+  <div class="info">
+    <h2 style="margin-bottom: 10px;" data-translate="tentangSaya">Tentang Saya</h2>
+    <p style="max-width: 500px; margin: 0 auto;" data-translate="deskripsiProfil">
+      Halo! Saya seorang pengembang web pemula yang sedang belajar membuat antarmuka interaktif dan responsif.
+      Proyek ini adalah langkah awal saya untuk menampilkan karya secara online.
+    </p>
+
+    <h3 style="margin-top: 25px;" data-translate="website">Website</h3>
+    <p>
+      GitHub: 
+      <a href="https://github.com/DaffaProject-sudo" target="_blank" style="color: #1e90ff; text-decoration: none;">
+        <strong>https://github.com/DaffaProject-sudo</strong>
+      </a>
+    </p>
+
+    <h3 style="margin-top: 25px;" data-translate="skill">Skill</h3>
+    <ul style="list-style: none; padding-left: 0;">
+      <li data-translate="skill1">✔ HTML & CSS</li>
+      <li data-translate="skill2">✔ JavaScript (dasar)</li>
+      <li data-translate="skill3">✔ UI sederhana</li>
+      <li data-translate="skill4">✔ Publikasi ke Netlify</li>
+    </ul>
+  </div>
+
+  <footer>
+    <p data-translate="developedByDaffaProject">Developed by Daffa Project</p>
+  </footer>
+</section>
+
+      <section id="settings" class="page">
+  <div class="settings-container">
+    <h2 data-translate="settings2">⚙️ Pengaturan</h2>
+
+    <div class="setting-item">
+      <label data-translate="selectLanguage">🌐 Pilih Bahasa:</label>
+      <div class="lang-buttons">
+        <button onclick="setLanguage('id')">Bahasa Indonesia</button>
+        <button onclick="setLanguage('en')">English</button>
+      </div>
+    </div>
+    
+    <div class="setting-item">
+  <label data-translate="restartPage">🔄 Restart Halaman:</label>
+  <button onclick="restartHalaman()" 
+        data-translate="clickForReload" 
+        id="restart">
+  Klik untuk Reload
+</button>
+</div>
+
+    <div class="setting-item">
+      <label for="themeToggle" data-translate="lightDarkMode">🌗 Mode Terang / Gelap</label>
+      <input type="checkbox" id="themeToggle" />
+    </div>
+  </div>
+</section>
+
+      <section id="credits" class="page">
+  <h1 data-translate="creditsTitle">Proyek Game</h1>
+  <p><span data-translate="creditsDesc1">
+     Proyek ini dibuat dan dikembangkan oleh</span><strong> M Daffa Helfarabi</strong> <span data-translate="creditsDesc2">sebagai bagian dari pembelajaran dan pengembangan keterampilan dalam bidang pengembangan web. Seluruh tampilan dan fitur dalam website ini dirancang secara mandiri dengan mengutamakan kesederhanaan, kecepatan, dan pengalaman pengguna yang nyaman.</span>
+  </p>
+
+  <p data-translate="creditsThanks">
+    Terima kasih kepada pihak-pihak yang telah menyediakan sumber daya terbuka dan dokumentasi yang sangat membantu dalam proses pengembangan ini, di antaranya:
+  </p>
+
+  <ul style="text-align: left; max-width: 700px; margin: 20px auto;">
+    <li data-translate="mdn">
+      <strong>MDN Web Docs</strong> – Sebagai referensi utama dalam memahami struktur HTML, CSS, dan JavaScript secara menyeluruh dan mendalam.
+    </li><br>
+    <li data-translate="netlify">
+      <strong>Netlify</strong> – Untuk layanan hosting gratis yang memungkinkan proyek ini dapat diakses secara publik dan mudah di-deploy.
+    </li><br>
+    <li data-translate="flaticon">
+      <strong>Flaticon</strong> – Untuk penyediaan ikon bebas lisensi yang digunakan dalam beberapa elemen desain (jika ada).
+    </li><br>
+    <li data-translate="komunitas">
+      <strong>Komunitas Developer</strong> – Inspirasi dari berbagai forum dan proyek komunitas yang membantu menyempurnakan ide dan implementasi fitur.
+    </li>
+  </ul>
+
+  <p data-translate="creditsDesc3">
+    Seluruh kode dalam proyek ini ditulis secara manual dengan semangat belajar dan eksplorasi. Diharapkan proyek ini dapat terus berkembang dan menjadi portofolio yang bermanfaat di masa mendatang.
+  </p>
+
+  <p>
+    <span data-translate="versi">Versi: </span><strong>1.0.0</strong><br/>
+    <span data-translate="rilis">Rilis: </span><strong>Juli 2025</strong>
+  </p>
+
+  <footer style="margin-top: 110px;">
+    <p data-translate="developedByDaffaProject">Developed by Daffa Project</p>
+  </footer>
+</section>
+    </div>
+  </div>
+
+  <script src="Language.js"></script>
+  <script>
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      translate(); // translate loading screen
+    });
+
+    function toogleMenu() {
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+      if (sidebar.style.left === "0px") {
+        sidebar.style.left = "-245px";
+        overlay.classList.remove("overlay-active");
+      } else {
+        sidebar.style.left = "0px";
+        overlay.classList.add("overlay-active");
+      }
+    }
+
+    function changePage(pageId) {
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('page-active');
+      });
+      document.getElementById(pageId).classList.add('page-active');
+      toogleMenu();
+    }
+
+    document.addEventListener('click', function(event) {
+      const sidebar = document.getElementById("sidebar");
+      const menuBtn = document.querySelector(".menu-btn");
+      if (!sidebar.contains(event.target) && !menuBtn.contains(event.target)) {
+        sidebar.style.left = "-250px";
+        document.getElementById("overlay").classList.remove("overlay-active");
+      }
+    });
+
+    document.getElementById("overlay").addEventListener("click", function () {
+      toogleMenu();
+    });
+
+    const loadingScreen = document.getElementById("loading");
+    const kontenUtama = document.getElementById("kontenUtama");
+
+    loadingScreen.style.display = "block";
+    kontenUtama.style.display = "none";
+
+    setTimeout(() => {
+  loadingScreen.style.display = "none";
+  kontenUtama.style.display = "block";
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      kontenUtama.classList.add("show");
+    });
+  });
+
+  translate(); // translate setelah loading
+}, 2000);
+
+    const timeBox = document.getElementById("currentTime");
+setInterval(() => {
+  const now = new Date();
+  timeBox.textContent = now.toLocaleTimeString("id-ID", {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+}, 1000);
+
+  const tglElemen = document.getElementById("tanggalSekarang");
+  const tgl = new Date();
+  const tanggalFormat = tgl.toLocaleDateString("id-ID", {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+  tglElemen.textContent = tanggalFormat;
+  
+  function restartHalaman() {
+  location.reload();
+}
+  </script>
+</body>
+</html>

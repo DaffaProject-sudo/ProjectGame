@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Whack A Mole</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+    body {
+      margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #3b2f2f;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding-bottom: 20px;
+    }
+    #loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .loading-inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+#loading-text {
+  font-size: 22px;
+  white-space: nowrap;
+}
+    .dot-bounce {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 40px;
+    }
+    .dot-bounce div {
+      width: 10px;
+      height: 10px;
+      background-color: white;
+      border-radius: 50%;
+      animation: bounce 1s infinite;
+    }
+    .dot-bounce div:nth-child(2) { animation-delay: 0.2s; }
+    .dot-bounce div:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+      40% { transform: scale(1.4); opacity: 1; }
+    }
+    .spinner {
+      border: 6px solid #444;
+      border-top: 6px solid #1e90ff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      margin: 20px auto;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .fade-in {
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .fade-in.show {
+      opacity: 1;
+    }
+    #kontenUtama {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+#kontenUtama.show {
+  opacity: 1;
+}
+    h1 {
+      margin-top: 40px;
+      margin-bottom: 10px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 15px;
+      justify-content: center;
+      margin: 20px auto;
+    }
+    .cell {
+      width: 100px;
+      height: 100px;
+      font-size: 36px;
+      background-color: #f5e6c4;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      position: relative;
+    }
+    .cell:hover {
+      background-color: #dcc597;
+    }
+    #topRightMenu {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 10px;
+    }
+    #topRightMenu button {
+      background-color: #1B1833;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    #menu-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #111;
+  border-radius: 16px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  z-index: 10;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  width: 80%;
+  max-width: 300px;
+}
+
+#menu-popup.hidden {
+  display: none !important;
+}
+
+#menu-popup button {
+  font-size: 20px;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background-color: #292c44;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#menu-popup button:hover {
+  background-color: #3e4266;
+}
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(5px);
+      background-color: rgba(0, 0, 0, 0.3);
+      z-index: 9;
+    }
+    #overlay.hidden {
+      display: none !important;
+    }
+    #timer {
+      margin-top: 10px;
+      font-size: 18px;
+    }
+.hammer {
+  position: absolute;
+  font-size: 32px;
+  top: 5px;
+  right: 5px;
+  opacity: 0;
+  transform: scale(1);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 1;
+}
+.hammer.show {
+  opacity: 1;
+  transform: scale(1.5) rotate(-20deg);
+}
+.hammer.show {
+  opacity: 1;
+}
+#grid, #timer, #score {
+  display: none;
+}
+  </style>
+</head>
+<body>
+<div id="loading">
+  <div class="loading-inline">
+    <h1 id="loading-text" data-translate="loadingPage">Memuat halaman</h1>
+    <div class="dot-bounce"><div></div><div></div><div></div></div>
+  </div>
+  <div class="spinner"></div>
+</div>
+  
+  <div id="kontenUtama" class="fade-in">
+  <div id="topRightMenu">
+  <button id="musicToggle">🔊</button>
+  <button id="toggleMenu">☰</button>
+</div>
+
+  <div id="overlay" class="hidden"></div>
+  <div id="menu-popup" class="hidden">
+    <button onclick="resumeGame()" data-translate="resumeGame">▶️ Lanjut</button>
+    <button onclick="restartGame()" data-translate="restartGame">🔄 Ulangi</button>
+    <button onclick="exitGame()" data-translate="exitGame">❌ Keluar</button>
+  </div>
+
+  <h1 data-translate="whackMole">Whack A Mole</h1>
+  <p id="score"><span data-translate="scoreText">Skor:</span> 0 | <span data-translate="highScoreText">Skor Tertinggi:</span> 0</p>
+  <button id="startBtn" style="font-size: 20px; padding: 10px 20px; margin-top: 30px; border-radius: 10px;">🎮 Mulai Game</button>
+  <div class="grid" id="grid"></div>
+  <p id="timer">⏱ 0s</p>
+
+  <audio id="bgMusic" src="Musik3.mp3" loop></audio>
+  </div>
+  <script src="Language.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+  const loadingScreen = document.getElementById('loading');
+  const mainContent = document.getElementById('kontenUtama');
+
+  // Sembunyikan loading & tampilkan konten utama setelah halaman dimuat
+  setTimeout(() => {
+    loadingScreen.style.display = 'none';
+    mainContent.classList.add('show');
+  }, 1000); // durasi loading 1 detik
+});
+  
+  const grid = document.getElementById("grid");
+  const scoreDisplay = document.getElementById("score");
+  const timerDisplay = document.getElementById("timer");
+  const bgMusic = document.getElementById("bgMusic");
+  let musicStarted = false;
+
+  const totalCells = 9;
+  let moleIndex = -1;
+  let score = 0;
+  let highScore = localStorage.getItem("whackHighScore") || 0;
+  let timeLeft = 30;
+  let gameInterval;
+  let moleInterval;
+  let isPaused = false;
+
+  const overlay = document.getElementById("overlay");
+  const menuPopup = document.getElementById("menu-popup");
+  const toggleBtn = document.getElementById("toggleMenu");
+
+  // Buat grid awal + hammer di setiap cell
+  for (let i = 0; i < totalCells; i++) {
+    const cell = document.createElement("div");
+    cell.classList.add("cell");
+    cell.dataset.index = i;
+    cell.innerHTML = `<span class="mole"></span><span class="hammer">🔨</span>`;
+    grid.appendChild(cell);
+  }
+
+  const cells = document.querySelectorAll(".cell");
+
+  function showMole() {
+    if (isPaused) return;
+    cells.forEach(cell => {
+      const mole = cell.querySelector(".mole");
+      mole.textContent = "";
+    });
+    moleIndex = Math.floor(Math.random() * totalCells);
+    const targetCell = cells[moleIndex];
+    const mole = targetCell.querySelector(".mole");
+    mole.textContent = "🐹";
+  }
+
+  function updateScore() {
+    scoreDisplay.innerHTML = `
+      <span data-translate="scoreText">Skor:</span> ${score} | 
+      <span data-translate="highScoreText">Skor Tertinggi:</span> ${highScore}
+    `;
+    if (typeof translate === "function") translate();
+  }
+
+  cells.forEach(cell => {
+  cell.addEventListener("click", () => {
+    // ✅ Mulai musik hanya sekali saat klik pertama
+    if (!musicStarted) {
+      bgMusic.volume = 1;
+      bgMusic.play().catch(() => {});
+      musicStarted = true;
+    }
+
+    if (isPaused) return;
+
+    const mole = cell.querySelector(".mole");
+    const hammer = cell.querySelector(".hammer");
+
+    if (parseInt(cell.dataset.index) === moleIndex && mole.textContent === "🐹") {
+      score += 5;
+
+      // Tampilkan animasi palu
+      hammer.classList.add("show");
+      setTimeout(() => hammer.classList.remove("show"), 300);
+
+      // Simpan skor tertinggi
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("whackHighScore", highScore);
+      }
+
+      mole.textContent = "";
+      moleIndex = -1;
+      updateScore();
+    }
+  });
+});
+
+  function startGame() {
+    score = 0;
+    timeLeft = 30;
+    updateScore();
+    timerDisplay.textContent = `⏱ ${timeLeft}s`;
+
+    // Mulai backsound saat game benar-benar dimulai
+    if (!musicStarted) {
+      bgMusic.volume = 1;
+      bgMusic.play().catch(() => {});
+      musicStarted = true;
+    }
+
+    gameInterval = setInterval(() => {
+      if (!isPaused) {
+        timeLeft--;
+        timerDisplay.textContent = `⏱ ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(gameInterval);
+          clearInterval(moleInterval);
+          alert("⏰ Waktu Habis!\nSkor Akhir: " + score);
+        }
+      }
+    }, 1000);
+
+    moleInterval = setInterval(showMole, 800);
+  }
+
+  toggleBtn.addEventListener("click", () => {
+    isPaused = true;
+    menuPopup.classList.remove("hidden");
+    overlay.classList.remove("hidden");
+  });
+
+  function resumeGame() {
+    isPaused = false;
+    menuPopup.classList.add("hidden");
+    overlay.classList.add("hidden");
+  }
+
+  function restartGame() {
+    location.reload();
+  }
+
+  function exitGame() {
+    history.back();
+  }
+
+  const startBtn = document.getElementById("startBtn");
+
+startBtn.addEventListener("click", () => {
+  bgMusic.volume = 0.4;
+  bgMusic.play().catch(() => {});
+  musicStarted = true;
+
+  // Tampilkan elemen game
+  document.getElementById("grid").style.display = "grid";
+  document.getElementById("timer").style.display = "block";
+  document.getElementById("score").style.display = "block";
+  startBtn.style.display = "none";
+
+  updateScore();
+  startGame();
+});
+
+  window.addEventListener("DOMContentLoaded", () => {
+    updateScore();
+  });
+  
+  const musicToggleBtn = document.getElementById("musicToggle");
+
+musicToggleBtn.addEventListener("click", () => {
+  if (bgMusic.paused) {
+    bgMusic.play().catch(() => {});
+    musicToggleBtn.textContent = "🔊"; // Ganti jadi ikon suara aktif
+  } else {
+    bgMusic.pause();
+    musicToggleBtn.textContent = "🔇"; // Ganti jadi ikon suara mati
+  }
+});
+</script>
+</body>
+</html>

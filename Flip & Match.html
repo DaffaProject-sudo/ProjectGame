@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flip & Match</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      background-color: #0b0f2b;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      font-family: sans-serif;
+    }
+
+    #loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .loading-inline {
+      display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+    }
+    #loading-text {
+  font-size: 22px;
+  white-space: nowrap;
+  background: none;
+  border: none;
+  margin-bottom: 0;
+}
+
+    .dot-bounce {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .dot-bounce div {
+      width: 10px;
+      height: 10px;
+      background-color: white;
+      border-radius: 50%;
+      animation: bounce 1s infinite;
+    }
+
+    .dot-bounce div:nth-child(2) { animation-delay: 0.2s; }
+    .dot-bounce div:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+      40% { transform: scale(1.4); opacity: 1; }
+    }
+
+    .spinner {
+      border: 6px solid #444;
+      border-top: 6px solid #1e90ff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      margin: 20px auto;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    #kontenUtama {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    #kontenUtama.show {
+      opacity: 1;
+    }
+
+    #topRightMenu {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    #topRightMenu button {
+      padding: 6px 16px;
+      border-radius: 10px;
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+      background-color: #192065;
+      color: #fff;
+    }
+
+    h1 {
+      background-color: #1B1833;
+      border: 3px double aqua;
+      border-radius: 15px;
+      color: #FFF;
+      padding: 10px 20px;
+      margin-bottom: 20px;
+      font-size: 30px;
+    }
+
+    .timer-container {
+      width: 80%;
+      max-width: 400px;
+      height: 25px;
+      background-color: #555;
+      border-radius: 15px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    #time-bar {
+      height: 100%;
+      width: 100%;
+      background-color: #00ffcc;
+      transition: width 1s linear;
+    }
+
+    #time-label {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      font-size: 18px;
+      line-height: 25px;
+      color: white;
+      font-weight: bold;
+    }
+
+    .skor {
+      font-size: 24px;
+      color: #00ffcc;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .group-kotak {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      max-width: 400px;
+    }
+
+    .kotak-inner {
+      position: relative;
+      width: 75px;
+      height: 75px;
+      transform-style: preserve-3d;
+      transition: transform 0.8s;
+    }
+
+    .kotak-inner.flip {
+      transform: rotateY(180deg);
+    }
+
+    .kotak-inner.matched {
+      visibility: hidden;
+    }
+
+    .kotak,
+    .kotak-back {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      border-radius: 10px;
+      backface-visibility: hidden;
+    }
+
+    .kotak {
+      background-color: #00ffd9;
+    }
+
+    .kotak-back {
+      transform: rotateY(180deg);
+    }
+
+    .message {
+      background-color: #fff;
+      border: 3px solid gold;
+      border-radius: 20px;
+      padding: 20px 30px;
+      font-size: 24px;
+      color: black;
+      margin-top: 20px;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .message.visible {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .message.win {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .message.lose {
+      background-color: #FF4500;
+      color: white;
+    }
+
+    #menu-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #1B1833;
+      border: 3px solid #00ffcc;
+      border-radius: 20px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 10;
+    }
+
+    #menu-popup.hidden {
+      display: none !important;
+    }
+
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(5px);
+      background-color: rgba(0, 0, 0, 0.3);
+      z-index: 9;
+    }
+
+    #overlay.hidden {
+      display: none !important;
+    }
+
+    #menu-popup button {
+      font-size: 20px;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      background-color: #192065;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<div id="loading">
+  <div class="loading-inline">
+    <h1 id="loading-text" data-translate="loadingPage">Loading</h1>
+    <div class="dot-bounce"><div></div><div></div><div></div></div>
+  </div>
+  <div class="spinner"></div>
+</div>
+
+<div id="kontenUtama">
+  <div id="topRightMenu">
+    <button id="toggleSound">🔊</button>
+    <button id="kembali">☰</button>
+  </div>
+
+  <div id="overlay" class="hidden"></div>
+  <div id="menu-popup" class="hidden">
+    <button onclick="resumeGame()" data-translate="resumeGame">▶️ Resume</button>
+    <button onclick="restartGame()" data-translate="restartGame">🔄 Restart</button>
+    <button onclick="exitGame()" data-translate="exitGame">❌ Exit</button>
+  </div>
+
+  <h1 data-translate="flipMatchTitle">Flip & Match</h1>
+  <div class="timer-container">
+    <div id="time-bar"></div>
+    <span id="time-label">60 detik</span>
+  </div>
+
+  <div class="skor" data-translate="scoreText">Score: <span id="scoreDisplay">0</span></div>
+  <div class="skor" data-translate="highScoreText">High Score: <span id="highScoreDisplay">0</span></div>
+  <div class="group-kotak"></div>
+  <div class="message" id="game-message"></div>
+
+  <audio id="backsound" src="Musik2.MP3" loop></audio>
+</div>
+
+
+<script>
+const lang = localStorage.getItem("selectedLanguage") || "id";
+
+const translations = {
+  loadingPage: {
+    id: "Memuat halaman",
+    en: "Loading page"
+  }
+};
+
+function applyTranslations() {
+  const elements = document.querySelectorAll("[data-translate]");
+  elements.forEach(el => {
+    const key = el.getAttribute("data-translate");
+    if (translations[key] && translations[key][lang]) {
+      el.textContent = translations[key][lang];
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  applyTranslations();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const loading = document.getElementById("loading");
+  const kontenUtama = document.getElementById("kontenUtama");
+  setTimeout(() => {
+    loading.style.display = "none";
+    kontenUtama.classList.add("show");
+  }, 1000);
+});
+
+const groupKotak = document.querySelector('.group-kotak');
+const message = document.getElementById("game-message");
+const backsound = document.getElementById("backsound");
+const toggleBtn = document.getElementById("toggleSound");
+const kembaliBtn = document.getElementById("kembali");
+const menuPopup = document.getElementById("menu-popup");
+const overlay = document.getElementById("overlay");
+
+let clickedKotaks = [];
+let isPaused = false;
+let score = 0;
+let highScore = localStorage.getItem("flipMatchHighScore") || 0;
+let timeRemaining = 60;
+let timerInterval;
+let isMuted = false;
+let soundStarted = false;
+let gameOver = false;
+
+document.getElementById("highScoreDisplay").textContent = highScore;
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+const colors = [
+  '#FF5733','#FF5733',
+  '#8A2BE2','#8A2BE2',
+  '#FFD700','#FFD700',
+  '#FF4500','#FF4500',
+  '#32CD32','#32CD32',
+  '#C71585','#C71585',
+  '#00BFFF','#00BFFF',
+  '#FF69B4','#FF69B4'
+];
+
+function generateBoard() {
+  groupKotak.innerHTML = '';
+  const shuffled = shuffle([...colors]);
+  shuffled.forEach(color => {
+    const kotakInner = document.createElement('div');
+    kotakInner.classList.add('kotak-inner');
+    kotakInner.innerHTML = `
+      <div class="kotak"></div>
+      <div class="kotak-back" style="background-color: ${color}"></div>
+    `;
+    groupKotak.appendChild(kotakInner);
+  });
+  addClickEvents();
+}
+
+function addClickEvents() {
+  clickedKotaks = [];
+  document.querySelectorAll('.kotak-inner').forEach(kotak => {
+    kotak.onclick = () => {
+      if (
+  kotak.classList.contains('flip') ||
+  kotak.classList.contains('matched') ||
+  clickedKotaks.length >= 2 ||
+  isPaused ||
+  gameOver
+) return;
+
+      kotak.classList.add('flip');
+      clickedKotaks.push(kotak);
+
+      if (clickedKotaks.length === 2) {
+        const c1 = clickedKotaks[0].querySelector('.kotak-back').style.backgroundColor;
+        const c2 = clickedKotaks[1].querySelector('.kotak-back').style.backgroundColor;
+
+        if (c1 === c2) {
+          setTimeout(() => {
+            clickedKotaks.forEach(k => {
+              k.classList.add('matched');
+            });
+            score += 10;
+            document.getElementById("scoreDisplay").textContent = score;
+
+            if (score > highScore) {
+              highScore = score;
+              localStorage.setItem("flipMatchHighScore", highScore);
+              document.getElementById("highScoreDisplay").textContent = highScore;
+            }
+
+            clickedKotaks = [];
+            const allMatched = [...document.querySelectorAll('.kotak-inner')].every(k => k.classList.contains('matched'));
+if (allMatched) {
+  setTimeout(() => endGame(true), 800);
+}
+
+          }, 700);
+        } else {
+          setTimeout(() => {
+            clickedKotaks.forEach(k => k.classList.remove('flip'));
+            clickedKotaks = [];
+          }, 800);
+        }
+      }
+    };
+  });
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    if (!isPaused) {
+      timeRemaining--;
+      document.getElementById("time-label").textContent = `${timeRemaining} detik`;
+      document.getElementById("time-bar").style.width = `${(timeRemaining / 60) * 100}%`;
+      if (timeRemaining <= 0 && !gameOver) {
+  clearInterval(timerInterval);
+  endGame(false);
+}
+    }
+  }, 1000);
+}
+
+function endGame(win) {
+  if (gameOver && !win) return; // hanya batasi saat kalah agar tidak double
+
+  if (win) {
+    // Reset papan dan lanjut ke ronde berikutnya
+    setTimeout(() => {
+      generateBoard();
+      clickedKotaks = [];
+      gameOver = false; // biar bisa lanjut main
+      message.classList.remove("visible", "win", "lose");
+    }, 800); // jeda biar gak terlalu cepat
+    return;
+  }
+
+  // Kalau kalah (waktu habis)
+  gameOver = true;
+  message.textContent = "Waktu Habis!";
+  message.classList.add("lose", "visible");
+}
+
+toggleBtn.onclick = () => {
+  isMuted = !isMuted;
+  backsound.muted = isMuted;
+  toggleBtn.textContent = isMuted ? "🔇" : "🔊";
+};
+
+groupKotak.addEventListener("click", () => {
+  if (!soundStarted) {
+    backsound.volume = 1;
+    backsound.play().catch(() => {});
+    soundStarted = true;
+  }
+});
+
+kembaliBtn.onclick = () => {
+  isPaused = true;
+  menuPopup.classList.remove("hidden");
+  overlay.classList.remove("hidden");
+};
+
+function resumeGame() {
+  isPaused = false;
+  menuPopup.classList.add("hidden");
+  overlay.classList.add("hidden");
+}
+
+function restartGame() {
+  location.reload();
+}
+
+function exitGame() {
+  history.back();
+}
+
+generateBoard();
+startTimer();
+</script>
+</body>
+</html>
